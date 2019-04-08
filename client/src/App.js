@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Web3 from 'web3';
-import { timingSafeEqual } from "crypto";
 import {erc20minABI} from "./abi.js";
 
 class App extends Component {
   // initialize our state 
   state = {
-    data: [],
+    snippets: [],
     id: 0,
     message: null,
     intervalIsSet: false,
@@ -27,8 +26,29 @@ class App extends Component {
       let interval = setInterval(this.getDataFromDb, 1000);
       this.setState({ intervalIsSet: interval });
     }
-    this.loadWalletAddress();
-    this.loadTokens();
+    let self = this;
+    const loadWalletPromise = this.loadWalletAddress().then((address) => {
+      self.setState({walletAddress: address})
+    });
+    const loadTokenPromise = this.loadTokens().then((tokens) => {
+      self.setState({tokens: tokens})
+    });
+
+    Promise.all([loadWalletPromise, loadTokenPromise]).then(() => {
+      const balancePromisesPerToken = self.state.tokens.map((token, index) => {
+        return self.state.snippets.map((snippet) => {
+          return self.getContractBalances(token.address, self.state.walletAddress, snippet)
+        }).concat(self.getBalance(token.address, index));
+      })
+
+      balancePromisesPerToken.forEach((balancePromises, tokenIndex) => {
+        Promise.all(balancePromises).then((balances) => {
+          self.setState((state) => {
+            state.tokens[tokenIndex].balance = balances.reduce((a,b) => a + b, 0);
+          })
+        })
+      })
+    })
   }
 
   // never let a process live forever 
@@ -48,9 +68,9 @@ class App extends Component {
   // our first get method that uses our backend api to 
   // fetch data from our data base
   getDataFromDb = () => {
-    fetch("http://localhost:3001/api/getData")
-      .then(data => data.json())
-      .then(res => this.setState({ data: res.data }));
+    fetch("http://localhost:3001/api/getSnippets")
+      .then(snippets => snippets.json())
+      .then(res => this.setState({ snippets: res.data }));
   };
 
   // our put method that uses our backend api
@@ -104,42 +124,39 @@ class App extends Component {
   };
 
   loadWalletAddress() {
-    let self = this
-    const web3 = new Web3(window.web3.currentProvider)
-    web3.eth.getAccounts((e, addresses) => {
-      self.setState({walletAddress: addresses[0]})
-    });
+    let promise = new Promise((resolve, reject) => {
+      const web3 = new Web3(window.web3.currentProvider)
+      web3.eth.getAccounts((e, addresses) => {
+        resolve(addresses[0])
+      });
+    })
+    return promise
   }
 
   loadTokens() {
-    let self = this;
-    axios.get('https://safe-relay.gnosis.pm/api/v1/tokens/')
+    return axios.get('https://safe-relay.gnosis.pm/api/v1/tokens/')
       .then(function (response) {
-        // handle success
-        self.setState({tokens: response.data.results})
-        response.data.results.forEach((token, index) => {
-          self.getBalance(token.address, index);
-        })
+        return response.data.results
     })
   }
 
   getBalance(tokenAddress, index) {
     const web3 = new Web3(window.web3.currentProvider)
     let contract = web3.eth.contract(erc20minABI).at(tokenAddress);
-    let self = this
-    contract.balanceOf(this.state.walletAddress, (error, balance) => {
-      // Get decimals
-      contract.decimals((error, decimals) => {
-        // calculate a balance
-        balance = balance.div(10**decimals);
-        let tokens = self.state.tokens;
-        tokens[index].balance = balance;
-        self.setState(state => {
-          state.tokens[index].balance = balance.toNumber();
-        })
-        console.log(balance.toString()+ " index: " + index);
+    return new Promise((resolve, reject) => {
+        contract.balanceOf(this.state.walletAddress, (error, balance) => {
+        // Get decimals
+        return contract.decimals((error, decimals) => {
+          // calculate a balance
+          resolve(balance.div(10**decimals).toNumber())
+        });
       });
     });
+  }
+
+  getContractBalances(tokenAddress, walletAddress, snippet) {
+    const web3 = new Web3(window.web3.currentProvider)
+    return new Function(snippet.code)(web3, tokenAddress, walletAddress);
   }
 
 
@@ -147,7 +164,7 @@ class App extends Component {
   // it is easy to understand their functions when you 
   // see them render into our screen
   render() {
-    const { data, tokens } = this.state;
+    const { snippets, tokens } = this.state;
     return (
       <div>
         <div>
@@ -163,13 +180,11 @@ class App extends Component {
               ))}
         </ul>
         <ul>
-          {data.length <= 0
+          {snippets.length <= 0
             ? "NO DB ENTRIES YET"
-            : data.map(dat => (
-                <li style={{ padding: "10px" }} key={data.message}>
-                  <span style={{ color: "gray" }}> id: </span> {dat.id} <br />
-                  <span style={{ color: "gray" }}> data: </span>
-                  {dat.message}
+            : snippets.map(snippet => (
+                <li style={{ padding: "10px" }} key={snippet.snippet}>
+                  <span style={{ color: "gray" }}> Snippet for contract: </span> {snippet.contract} <br />
                 </li>
               ))}
         </ul>

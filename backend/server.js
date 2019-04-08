@@ -3,17 +3,17 @@ const express = require("express");
 var cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-const Data = require("./data");
+const Snippet = require("./data");
 
 const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
 
-// this is our MongoDB database
+// this is our MongoDB Snippetbase
 const dbRoute = "mongodb+srv://user:Initial1@where-are-my-tokens-lq9ot.mongodb.net/test?retryWrites=true";
 
-// connects our back end code with the database
+// connects our back end code with the Snippetbase
 mongoose.connect(
   dbRoute,
   { useNewUrlParser: true }
@@ -21,9 +21,9 @@ mongoose.connect(
 
 let db = mongoose.connection;
 
-db.once("open", () => console.log("connected to the database"));
+db.once("open", () => console.log("connected to the Snippetbase"));
 
-// checks if connection with the database is successful
+// checks if connection with the Snippetbase is successful
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // (optional) only made for logging and
@@ -33,38 +33,39 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 
 // this is our get method
-// this method fetches all available data in our database
-router.get("/getData", (req, res) => {
-  Data.find((err, data) => {
+// this method fetches all available Snippet in our Snippetbase
+router.get("/getSnippets", (req, res) => {
+  Snippet.find((err, Snippet) => {
+    console.log(Snippet)
     if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
+    return res.json({ success: true, data: Snippet });
   });
 });
 
 // this is our update method
-// this method overwrites existing data in our database
-router.post("/updateData", (req, res) => {
+// this method overwrites existing Snippet in our Snippetbase
+router.post("/updateSnippet", (req, res) => {
   const { id, update } = req.body;
-  Data.findOneAndUpdate(id, update, err => {
+  Snippet.findOneAndUpdate(id, update, err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
 });
 
 // this is our delete method
-// this method removes existing data in our database
-router.delete("/deleteData", (req, res) => {
+// this method removes existing Snippet in our Snippetbase
+router.delete("/deleteSnippet", (req, res) => {
   const { id } = req.body;
-  Data.findOneAndDelete(id, err => {
+  Snippet.findOneAndDelete(id, err => {
     if (err) return res.send(err);
     return res.json({ success: true });
   });
 });
 
 // this is our create methid
-// this method adds new data in our database
-router.post("/putData", (req, res) => {
-  let data = new Data();
+// this method adds new Snippet in our Snippetbase
+router.post("/putSnippet", (req, res) => {
+  let Snippet = new Snippet();
 
   const { id, message } = req.body;
 
@@ -74,9 +75,9 @@ router.post("/putData", (req, res) => {
       error: "INVALID INPUTS"
     });
   }
-  data.message = message;
-  data.id = id;
-  data.save(err => {
+  Snippet.message = message;
+  Snippet.id = id;
+  Snippet.save(err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
