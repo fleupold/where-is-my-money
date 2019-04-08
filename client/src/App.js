@@ -142,16 +142,12 @@ class App extends Component {
 
   getBalance(tokenAddress, index) {
     const web3 = new Web3(window.web3.currentProvider)
-    let contract = web3.eth.contract(erc20minABI).at(tokenAddress);
-    return new Promise((resolve, reject) => {
-        contract.balanceOf(this.state.walletAddress, (error, balance) => {
-        // Get decimals
-        return contract.decimals((error, decimals) => {
-          // calculate a balance
-          resolve(balance.div(10**decimals).toNumber())
-        });
+    let contract = new web3.eth.Contract(erc20minABI, tokenAddress);
+    return contract.methods.balanceOf(this.state.walletAddress).call()
+      .then(async (balance) => {
+        const decimals = await contract.methods.decimals.call()
+        return balance / 10**decimals
       });
-    });
   }
 
   getContractBalances(tokenAddress, walletAddress, snippet) {
