@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Web3 from 'web3';
+import { timingSafeEqual } from "crypto";
+import {erc20minABI} from "./abi.js";
 
 class App extends Component {
   // initialize our state 
@@ -10,7 +13,9 @@ class App extends Component {
     intervalIsSet: false,
     idToDelete: null,
     idToUpdate: null,
-    objectToUpdate: null
+    objectToUpdate: null,
+    walletAddress: null,
+    tokens: [],
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -22,6 +27,8 @@ class App extends Component {
       let interval = setInterval(this.getDataFromDb, 1000);
       this.setState({ intervalIsSet: interval });
     }
+    this.loadWalletAddress();
+    this.loadTokens();
   }
 
   // never let a process live forever 
@@ -67,7 +74,7 @@ class App extends Component {
   deleteFromDB = idTodelete => {
     let objIdToDelete = null;
     this.state.data.forEach(dat => {
-      if (dat.id == idTodelete) {
+      if (dat.id === idTodelete) {
         objIdToDelete = dat._id;
       }
     });
@@ -85,7 +92,7 @@ class App extends Component {
   updateDB = (idToUpdate, updateToApply) => {
     let objIdToUpdate = null;
     this.state.data.forEach(dat => {
-      if (dat.id == idToUpdate) {
+      if (dat.id === idToUpdate) {
         objIdToUpdate = dat._id;
       }
     });
@@ -96,14 +103,65 @@ class App extends Component {
     });
   };
 
+  loadWalletAddress() {
+    let self = this
+    const web3 = new Web3(window.web3.currentProvider)
+    web3.eth.getAccounts((e, addresses) => {
+      self.setState({walletAddress: addresses[0]})
+    });
+  }
+
+  loadTokens() {
+    let self = this;
+    axios.get('https://safe-relay.gnosis.pm/api/v1/tokens/')
+      .then(function (response) {
+        // handle success
+        self.setState({tokens: response.data.results})
+        response.data.results.forEach((token, index) => {
+          self.getBalance(token.address, index);
+        })
+    })
+  }
+
+  getBalance(tokenAddress, index) {
+    const web3 = new Web3(window.web3.currentProvider)
+    let contract = web3.eth.contract(erc20minABI).at(tokenAddress);
+    let self = this
+    contract.balanceOf(this.state.walletAddress, (error, balance) => {
+      // Get decimals
+      contract.decimals((error, decimals) => {
+        // calculate a balance
+        balance = balance.div(10**decimals);
+        let tokens = self.state.tokens;
+        tokens[index].balance = balance;
+        self.setState(state => {
+          state.tokens[index].balance = balance.toNumber();
+        })
+        console.log(balance.toString()+ " index: " + index);
+      });
+    });
+  }
+
 
   // here is our UI
   // it is easy to understand their functions when you 
   // see them render into our screen
   render() {
-    const { data } = this.state;
+    const { data, tokens } = this.state;
     return (
       <div>
+        <div>
+            <p>Wallet Address: {this.state.walletAddress}</p>
+        </div>
+        <ul>
+          {tokens.length <= 0
+            ? "Loading Tokens"
+            : tokens.map(token => (
+                <li style={{ padding: "10px" , background: "url('/images/leaf_icon.jpg') no-repeat left top"}} key={token.symbol}>
+                  <span style={{ color: "gray" }}> {token.symbol} {token.balance}</span>
+                </li>
+              ))}
+        </ul>
         <ul>
           {data.length <= 0
             ? "NO DB ENTRIES YET"
