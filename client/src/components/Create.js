@@ -93,7 +93,7 @@ class Create extends Component {
                     {}
                   </td>
                   <td>
-                    <button type="button" className="btn btn-primary" data-toggle="modal" data-target={"#showCode".concat(index)}>
+                    <button type="button" className="btn btn-outline-secondary" data-toggle="modal" data-target={"#showCode".concat(index)}>
                       Show code
                     </button>
                     <div className="modal fade" id={"showCode".concat(index)} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
