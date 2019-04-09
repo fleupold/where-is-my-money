@@ -12,7 +12,7 @@ It's not another block exporer or transaction tracker. It's not doing blockchain
 It is not a wallet and a user cannot exchange tokens. 
 
 ### WIMM in short:
-**Where is my money? - Track your ERC20 token funds accross smart contracts on the Ethereum Mainnet.**
+**Where is my money? - Track your ERC20 token funds distributed accross smart contracts on the Ethereum Mainnet.**
 
 ### WIMM use cases
 **For liquid tokens** (*immediately spendable*)
