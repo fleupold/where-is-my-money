@@ -90,6 +90,9 @@ class Create extends Component {
                     Code
                   </th>
                   <th scope="col">
+                    URL
+                  </th>
+                  <th scope="col">
                     Votes
                   </th>
                 </tr>
@@ -100,7 +103,6 @@ class Create extends Component {
                 <tr key={index}>
                   <td> 
                     {snippet.contract}
-                    {}
                   </td>
                   <td>
                     <button type="button" className="btn btn-outline-secondary" data-toggle="modal" data-target={"#showCode".concat(index)}>
@@ -126,6 +128,9 @@ class Create extends Component {
                         </div>
                       </div>
                     </div>
+                  </td>
+                  <td>
+                    <a href={snippet.url} target="_blank" rel="noopener noreferrer">{snippet.url}</a>
                   </td>
                   <td>
                     <button type="button" class="btn btn-link" onClick={() => this.upvote(snippet)}  disabled={!!localStorage.getItem(snippet._id)}>
@@ -170,7 +175,6 @@ class Create extends Component {
                   type="text"
                   className="form-control"
                   id="urlInput"
-                  // onChange={e => this.setState({ contract: e.target.value })}
                   placeholder="URL of dapp"
                 />
                 <br/>
