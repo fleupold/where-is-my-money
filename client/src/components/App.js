@@ -147,14 +147,20 @@ class App extends Component {
         </div>
         <div class="row">
           <div class="col-6">
-            Wallet Address: <input 
-                type="text" 
-                style={{ width: "300px" }}
-                onChange={e => this.setState({ customWalletAddress: e.target.value })}
-                value={this.state.customWalletAddress}
-                placeholder="Enter address or ENS name"></input>
-                <button onClick={() => this.resolveCustomWalletAddress(this.state.customWalletAddress)}>Scan</button>
-            {/* {this.state.walletAddress} */}
+            <form onSubmit={(event) => {
+                event.preventDefault()
+                this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
+            >
+              <label>Wallet Address:
+                <input 
+                  type="text" 
+                  style={{ width: "300px" }}
+                  onChange={e => this.setState({ customWalletAddress: e.target.value })}
+                  value={this.state.customWalletAddress}
+                  placeholder="Enter address or ENS name" />
+              </label>
+              <input type="submit" value="Go" />
+            </form>
           </div>
         </div>
         <div class="row">
