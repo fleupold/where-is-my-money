@@ -4,11 +4,28 @@ var cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const Snippet = require("./data");
+const path = require('path');
 
 const API_PORT = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
+
+// (optional) only made for logging and
+// bodyParser, parses the request body to be a readable json format
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(logger("dev"));
+
+// append /api for our http requests
+app.use("/api", router);
+
+// use client code for other URLS
+app.use(express.static(path.join(__dirname, '..', 'client')));
+app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
 
 // this is our MongoDB Snippetbase
 const dbRoute = "mongodb+srv://user:Initial1@where-are-my-tokens-lq9ot.mongodb.net/test?retryWrites=true";
@@ -25,12 +42,6 @@ db.once("open", () => console.log("connected to the Snippetbase"));
 
 // checks if connection with the Snippetbase is successful
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger("dev"));
 
 // this is our get method
 // this method fetches all available Snippet in our Snippetbase
@@ -86,6 +97,7 @@ router.post("/putSnippet", (req, res) => {
 });
 
 router.post("/upvote", (req, res) => {
+  console.log(req)
   const { id } = req.body;
   Snippet.findOneAndUpdate({'_id': id}, {$inc: { "upvotes" : 1 }}, err => {
     if (err) return res.json({ success: false, error: err });
@@ -100,9 +112,6 @@ router.post("/downvote", (req, res) => {
     return res.json({ success: true });
   });
 });
-
-// append /api for our http requests
-app.use("/api", router);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

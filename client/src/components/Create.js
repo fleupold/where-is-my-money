@@ -43,7 +43,7 @@ class Create extends Component {
 
   upvote = (snippet) => {
     localStorage.setItem(snippet._id, true);
-    axios.post("http://localhost:3001/api/upvote", {
+    axios.post("api/upvote", {
       id: snippet._id,
     })
     snippet.upvotes++;
@@ -52,7 +52,7 @@ class Create extends Component {
 
   downvote = (snippet) => {
     localStorage.setItem(snippet._id, true);
-    axios.post("http://localhost:3001/api/downvote", {
+    axios.post("api/downvote", {
       id: snippet._id,
     });
     snippet.downvotes++;

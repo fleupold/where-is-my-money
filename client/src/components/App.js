@@ -79,7 +79,7 @@ class App extends Component {
   // our first get method that uses our backend api to 
   // fetch data from our data base
   getDataFromDb = () => {
-    return fetch("http://localhost:3001/api/getSnippets")
+    return fetch("api/getSnippets")
       .then(snippets => snippets.json())
       .then(res => res.data.filter((r) => r.upvotes >= r.downvotes))
       .then(filtered => this.setState({ snippets: filtered }));
