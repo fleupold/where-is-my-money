@@ -6,6 +6,7 @@ var web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
 
 var accountAddress = "0x390409C2DFdffaA58e02085678FBAcf7f40a5522"; // An account with balance
 var tokenAddress = "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07"; // OMG
+const url = "https://slow.trade"
 
 function execute() {
     var contractAddress = "0xb9812e2fa995ec53b5b6df34d21f9304762c5497";

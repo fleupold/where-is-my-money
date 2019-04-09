@@ -67,7 +67,7 @@ router.delete("/deleteSnippet", (req, res) => {
 router.post("/putSnippet", (req, res) => {
   let snippet = new Snippet();
 
-  const { contract, code } = req.body;
+  const { contract, code, url, isLiquid } = req.body;
 
   if (!contract || !code) {
     return res.json({
@@ -77,6 +77,8 @@ router.post("/putSnippet", (req, res) => {
   }
   snippet.contract = contract;
   snippet.code = code;
+  snippet.url = url;
+  snippet.isLiquid = isLiquid;
   snippet.save(err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });

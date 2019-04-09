@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import {Collapse} from 'react-collapse';
 import Highlight from 'react-highlight'
 
 import axios from "axios";
@@ -31,10 +30,12 @@ class Create extends Component {
 
   // our put method that uses our backend api
   // to create new query into our data base
-  putDataToDB = (contract, code) => {
+  putDataToDB = (contract, code, url, isLiquid) => {
     axios.post("http://localhost:3001/api/putSnippet", {
       contract: contract,
-      code: code
+      code: code,
+      url: url,
+      isLiquid: isLiquid
     }).then(() => {
       window.location.reload();
     });
@@ -160,6 +161,15 @@ class Create extends Component {
                   placeholder="Name of dapp"
                 />
                 <br/>
+                <h6>URL:</h6>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="urlInput"
+                  // onChange={e => this.setState({ contract: e.target.value })}
+                  placeholder="Name of dapp"
+                />
+                <br/>
                 <h6>Code:</h6>
                 <textarea
                   rows="20"
@@ -168,10 +178,21 @@ class Create extends Component {
                   placeholder="Script to fetch balances"
                   className="form-control"
                 />
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="isLiquidInput" value="true" />
+                    <label class="form-check-label" for="defaultCheck1">
+                        is locked (illiquid)
+                    </label>
+                </div>
               </div>
               <div className="modal-footer">
                 <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={() => {
-                  this.putDataToDB(document.getElementById("contractInput").value, document.getElementById("codeInput").value);
+                  this.putDataToDB(
+                      document.getElementById("contractInput").value, 
+                      document.getElementById("codeInput").value,
+                      document.getElementById("urlInput").value,
+                      !document.getElementById("isLiquidInput").checked,
+                    );
                 }}>Save</button>
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
