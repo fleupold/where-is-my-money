@@ -81,7 +81,8 @@ class App extends Component {
   getDataFromDb = () => {
     return fetch("http://localhost:3001/api/getSnippets")
       .then(snippets => snippets.json())
-      .then(res => this.setState({ snippets: res.data }));
+      .then(res => res.data.filter((r) => r.upvotes >= r.downvotes))
+      .then(filtered => this.setState({ snippets: filtered }));
   };
 
   loadWalletAddress() {
