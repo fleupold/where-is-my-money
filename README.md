@@ -55,7 +55,7 @@ It is not a wallet and a user cannot exchange tokens.
 - Feature to approve tokens to smart contract addresses and remove approval (important due to possible malicious smart contract upgrades)
 - Adding Etherscan links to contracts
 - Evolve into a smart contract standard via ERC
-- Integratation into wallets
+- Integration into wallets
 
 ##  References
 [Pitch slide deck](https://docs.google.com/presentation/d/1GYEeSvqJdSnYwrDVbqSW931ISxqkXA_ptnPDHYgnMYk/edit?usp=sharing)
