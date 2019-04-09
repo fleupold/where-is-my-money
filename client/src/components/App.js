@@ -173,8 +173,9 @@ class App extends Component {
               </div>
           </div>
         </div>
-        <div className="row mt-3">
-          <div className="col-6">
+        <br/>
+        <div className="row">
+          <div className="col-12">
             <div className="text-center">
               <form onSubmit={(event) => {
                   event.preventDefault()
@@ -182,7 +183,7 @@ class App extends Component {
                 <label>Wallet Address:
                   <input 
                     type="text" 
-                    style={{ width: "300px" }}
+                    style={{ width: "400px" }}
                     onChange={e => this.setState({ customWalletAddress: e.target.value })}
                     value={this.state.customWalletAddress}
                     placeholder="Enter address or ENS name" />
