@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import Web3 from 'web3';
 import {erc20minABI} from "./abi.js";
+import QrReader from 'react-qr-reader'
 
 const OMG_TOKEN = {
   "address": "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07",
@@ -158,6 +159,20 @@ class App extends Component {
       this.loadBalances()
   }
 
+  handleScan = data => {
+    if (data) {
+      const address = data.replace("ethereum:", "");
+      this.setState({
+        customWalletAddress: address,
+      })
+      window.$("#QR").modal('hide');
+      this.resolveCustomWalletAddress(address)
+    }
+  }
+  handleError = err => {
+    console.error(err)
+  }
+
   // here is our UI
   // it is easy to understand their functions when you 
   // see them render into our screen
@@ -165,6 +180,25 @@ class App extends Component {
     const { tokens } = this.state;
     return (
       <div>
+        <div className="modal fade" id="QR" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLongTitle">Scan your Address</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div className="modal-body text-center">
+                <QrReader
+                  delay={300}
+                  onError={this.handleError}
+                  onScan={this.handleScan}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="row">
           <div className="col col-12">
               <h1 className="text-center">Where is my money?</h1>
@@ -188,7 +222,9 @@ class App extends Component {
                     value={this.state.customWalletAddress}
                     placeholder="Enter address or ENS name" />
                 </label>
-                <input type="submit" value="Go" />
+                &nbsp;
+                <input type="submit" value="Go" />&nbsp;
+                <button type="button" data-toggle="modal" data-target="#QR" >Scan QR</button>
               </form>
             </div>
           </div>
