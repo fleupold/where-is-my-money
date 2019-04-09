@@ -43,6 +43,22 @@ class App extends Component {
     })
   }
 
+  getClaimBackUrl(contract, balance) {
+    if (balance <= 0) {
+      return "";
+    }
+    if (contract == "ERC20 contract") {
+      return "";
+    }
+    let snippet = this.state.snippets.find(function(snippet) {
+      return String(snippet.contract)==contract;
+    });
+    if (!snippet) {
+      return "";
+    }
+    return snippet.url;
+  }
+
   loadBalances() {
     console.log("Load balances " + this.state.walletAddress)
     const self = this;
@@ -142,12 +158,12 @@ class App extends Component {
       this.loadBalances()
   }
 
-
   // here is our UI
   // it is easy to understand their functions when you 
   // see them render into our screen
   render() {
     const { tokens } = this.state;
+    const { snippets } = this.state;
     return (
       <div>
         <div className="row">
@@ -163,8 +179,7 @@ class App extends Component {
             <div className="text-center">
               <form onSubmit={(event) => {
                   event.preventDefault()
-                  this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
-              >
+                  this.resolveCustomWalletAddress(this.state.customWalletAddress)}}>
                 <label>Wallet Address:
                   <input 
                     type="text" 
@@ -212,6 +227,11 @@ class App extends Component {
                                     </td>
                                     <td>
                                       {contract[1]}
+                                    </td>
+                                    <td>
+                                      {this.getClaimBackUrl(contract[0], contract[1]) ?  
+                                        <a href={this.getClaimBackUrl(contract[0], contract[1])} target="_blank">Claim back!</a>
+                                        : "-"}
                                     </td>
                                   </tr>
                                 ))}
