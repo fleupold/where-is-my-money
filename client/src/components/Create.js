@@ -75,6 +75,11 @@ class Create extends Component {
     return (
       <div>
         <a className="btn btn-secondary" href="/" role="button">Back to main</a>
+        <div className="row">
+          <div className="col col-12">
+              <h2 className="text-center">Manage dapps</h2>
+          </div>
+        </div>
         <div className="row mt-3">
           <div className="col col-12">
             <table className="table table-hover">
@@ -157,7 +162,6 @@ class Create extends Component {
                   type="text"
                   className="form-control"
                   id="contractInput"
-                  // onChange={e => this.setState({ contract: e.target.value })}
                   placeholder="Name of dapp"
                 />
                 <br/>
@@ -167,20 +171,23 @@ class Create extends Component {
                   className="form-control"
                   id="urlInput"
                   // onChange={e => this.setState({ contract: e.target.value })}
-                  placeholder="Name of dapp"
+                  placeholder="URL of dapp"
                 />
                 <br/>
                 <h6>Code:</h6>
                 <textarea
                   rows="20"
                   id="codeInput"
-                  // onChange={e => this.setState({ code: e.target.value })}
                   placeholder="Script to fetch balances"
                   className="form-control"
                 />
+                <small id="codeHelp" class="form-text text-muted">
+                    Your code must return a promise with the balance. You have the following input objects available: <code>web3</code>, <code>tokenAddress</code>, <code>accountAddress</code>.
+                </small>
+                <br />
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="isLiquidInput" value="true" />
-                    <label class="form-check-label" for="defaultCheck1">
+                    <label class="form-check-label" for="isLiquidInput">
                         is locked (illiquid)
                     </label>
                 </div>
