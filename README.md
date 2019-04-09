@@ -25,7 +25,7 @@ It is not a wallet and a user cannot exchange tokens.
 - Bounty networks
 - Auction processes (ENS / DutchX)
 - Escrow services
-- DEFI (decentralized lending, decentralized debt positions)
+- DeFi (decentralized lending, collateralized debt positions)
 - Pre-scheduled / committed funds
 - State channels
 - Vested employee token plans
@@ -47,7 +47,7 @@ It is not a wallet and a user cannot exchange tokens.
 - Missing piece of infrastructure
 - WIMM to improve usability and help adoption
 - Paying attention to smaller amounts!
-- Problem magnifies with upgradable smart contracts and updates to graphical user interfaces (tracks balances of "outdated" contracts)
+- Problem magnifies with non upgradable smart contracts and updates to graphical user interfaces (as WIMM tracks balances of "outdated" contracts)
 
 ##  Add features
 - Notifications when amounts become newly claimable (change from illiquid to liquid)
