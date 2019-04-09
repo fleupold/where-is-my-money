@@ -7,6 +7,7 @@ const Snippet = require("./data");
 const path = require('path');
 
 const API_PORT = process.env.PORT || 3001;
+const MONGO_PWD = process.env.MONGO_PWD
 const app = express();
 app.use(cors());
 const router = express.Router();
@@ -28,7 +29,7 @@ app.get('/*', function (req, res) {
 });
 
 // this is our MongoDB Snippetbase
-const dbRoute = "mongodb+srv://user:Initial1@where-are-my-tokens-lq9ot.mongodb.net/test?retryWrites=true";
+const dbRoute = "mongodb+srv://user:" + MONGO_PWD + "@where-are-my-tokens-lq9ot.mongodb.net/test?retryWrites=true";
 
 // connects our back end code with the Snippetbase
 mongoose.connect(
