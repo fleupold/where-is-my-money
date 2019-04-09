@@ -130,7 +130,7 @@ class Create extends Component {
                     </div>
                   </td>
                   <td>
-                    <a href={snippet.url} target="_blank">{snippet.url}</a>
+                    <a href={snippet.url} target="_blank" rel="noopener noreferrer">{snippet.url}</a>
                   </td>
                   <td>
                     <button type="button" class="btn btn-link" onClick={() => this.upvote(snippet)}  disabled={!!localStorage.getItem(snippet._id)}>

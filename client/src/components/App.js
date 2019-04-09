@@ -47,11 +47,11 @@ class App extends Component {
     if (balance <= 0) {
       return "";
     }
-    if (contract == "ERC20 contract") {
+    if (contract === "ERC20 contract") {
       return "";
     }
     let snippet = this.state.snippets.find(function(snippet) {
-      return String(snippet.contract)==contract;
+      return String(snippet.contract)===contract;
     });
     if (!snippet) {
       return "";
@@ -230,7 +230,7 @@ class App extends Component {
                                     </td>
                                     <td>
                                       {this.getClaimBackUrl(contract[0], contract[1]) ?  
-                                        <a href={this.getClaimBackUrl(contract[0], contract[1])} target="_blank">Claim back!</a>
+                                        <a href={this.getClaimBackUrl(contract[0], contract[1])} target="_blank" rel="noopener noreferrer">Claim back!</a>
                                         : "-"}
                                     </td>
                                   </tr>
