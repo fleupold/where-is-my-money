@@ -42,19 +42,21 @@ class Create extends Component {
     });
   };
 
-  upvote = (id) => {
-    localStorage.setItem(id, true);
+  upvote = (snippet) => {
+    localStorage.setItem(snippet._id, true);
     axios.post("http://localhost:3001/api/upvote", {
-      id: id,
+      id: snippet._id,
     })
+    snippet.upvotes++;
     this.forceUpdate();
   };
 
-  downvote = (id) => {
-    localStorage.setItem(id, true);
+  downvote = (snippet) => {
+    localStorage.setItem(snippet._id, true);
     axios.post("http://localhost:3001/api/downvote", {
-      id: id,
+      id: snippet._id,
     });
+    snippet.downvotes++;
     this.forceUpdate();
   };
 
@@ -73,43 +75,115 @@ class Create extends Component {
     const { snippets } = this.state;
     return (
       <div>
-        <ul>
-          {snippets.length <= 0
-            ? "NO DB ENTRIES YET"
-            : snippets.map((snippet, index) => (
-                <li style={{ padding: "10px" }} key={snippet.snippet}>
-                  <span style={{ color: "gray" }}> Snippet for contract: </span> {snippet.contract} <br />
-                  <span style={{ color: "gray" }}> Code </span> <button onClick={() => this.toggleSnippet(index)}>Show/Hide</button>
-                  <Collapse isOpened={!!snippet.open}>
-                    <Highlight className='js'>
-                        {snippet.code}
-                    </Highlight>
-                    <br/>
-                  </Collapse>
-                  <button disabled={localStorage.getItem(snippet._id)} onClick={() => this.upvote(snippet._id)}>Upvote</button>
-                  <button disabled={localStorage.getItem(snippet._id)} onClick={() => this.downvote(snippet._id)}>Downvote</button>
-                </li>
-              ))}
-        </ul>
-        <div style={{ padding: "10px" }}>
-          <span>Contract Name:</span>
-          <input
-            type="text"
-            style={{ width: "200px" }}
-            onChange={e => this.setState({ contract: e.target.value })}
-            placeholder="put name of the contract here"
-          />
-          <br/>
-          <textarea
-            rows="30"
-            onChange={e => this.setState({ code: e.target.value })}
-            placeholder="add script to fetch balances"
-            style={{ width: "600px" }}
-          />
-          <br/>
-          <button onClick={() => this.putDataToDB(this.state.message)}>
-            ADD
-          </button>
+        <div class="row">
+          <div class="col col-12">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">
+                    Dapp
+                  </th>
+                  <th scope="col">
+                    Code
+                  </th>
+                  <th scope="col">
+                    Votes
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              {snippets.length <= 0
+              ? "NO DB ENTRIES YET"
+              : snippets.map((snippet, index) => (
+                <tr>
+                  <td> 
+                    {snippet.contract}
+                    {}
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target={"#showCode".concat(index)}>
+                      Show code
+                    </button>
+                    <div class="modal fade" id={"showCode".concat(index)} tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Code for {snippet.contract}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <Highlight className='js'>
+                              {snippet.code}
+                            </Highlight>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-link" onClick={() => this.upvote(snippet)}  disabled={localStorage.getItem(snippet._id)}>
+                        <span role="img">👍</span>
+                        <span>{snippet.upvotes} </span>
+                    </button>
+                    <button type="button" class="btn btn-link" onClick={() => this.downvote(snippet)} disabled={localStorage.getItem(snippet._id)}>
+                        <span role="img">👎</span>
+                        <span>{snippet.downvotes} </span>
+                    </button>
+                  </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDapp">
+          Add dapp
+        </button>
+
+        <div class="modal fade" id="addDapp" tabindex="-1" role="dialog" aria-labelledby="addDappTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addDappTitle">Add new dapp</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                <h7>Contract Name:</h7>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contractInput"
+                  // onChange={e => this.setState({ contract: e.target.value })}
+                  placeholder="Name of dapp"
+                />
+                <br/>
+                <h7>Code:</h7>
+                <textarea
+                  rows="20"
+                  id="codeInput"
+                  // onChange={e => this.setState({ code: e.target.value })}
+                  placeholder="Script to fetch balances"
+                  class="form-control"
+                />
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal" onClick={() => {
+                  this.setState({ contract: document.getElementById("contractInput").value});
+                  this.setState({ code: document.getElementById("codeInput").value });
+                  this.putDataToDB(this.state.message);
+                }}>Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

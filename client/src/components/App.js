@@ -183,7 +183,7 @@ class App extends Component {
             <table class="table table-hover">
               <tbody>
                 {tokens.length <= 0
-                ? "<tr><td>Loading Tokens</tr></td>"
+                ? "Loading Tokens"
                 : tokens.map(token => (
                   <tr>
                     <td>
