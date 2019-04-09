@@ -72,99 +72,96 @@ class Create extends Component {
     const { snippets } = this.state;
     return (
       <div>
-        <div class="row">
-          <div class="col col-12">
-            <table class="table table-hover">
+        <a className="btn btn-secondary" href="/" role="button">Back to main</a>
+        <div className="row mt-3">
+          <div className="col col-12">
+            <table className="table table-hover">
               <thead>
                 <tr>
-                  <th scope="col">
-                    Dapp
-                  </th>
+                  <th scope="col">Dapp</th>
                   <th scope="col">
                     Code
                   </th>
                 </tr>
               </thead>
-              <tbody>
-              {snippets.length <= 0
-              ? "NO DB ENTRIES YET"
+              <tbody>{snippets.length <= 0
+              ? <tr><td>"NO DB ENTRIES YET"</td></tr>
               : snippets.map((snippet, index) => (
-                <tr>
+                <tr key={index}>
                   <td> 
                     {snippet.contract}
                     {}
                   </td>
                   <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target={"#showCode".concat(index)}>
+                    <button type="button" className="btn btn-primary" data-toggle="modal" data-target={"#showCode".concat(index)}>
                       Show code
                     </button>
-                    <div class="modal fade" id={"showCode".concat(index)} tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Code for {snippet.contract}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <div className="modal fade" id={"showCode".concat(index)} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLongTitle">Code for {snippet.contract}</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
-                          <div class="modal-body">
+                          <div className="modal-body">
                             <Highlight className='js'>
                               {snippet.code}
                             </Highlight>
                           </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </td>
                   </tr>
-                ))}
-              </tbody>
+                ))}</tbody>
             </table>
           </div>
         </div>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDapp">
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addDapp">
           Add dapp
         </button>
 
-        <div class="modal fade" id="addDapp" tabindex="-1" role="dialog" aria-labelledby="addDappTitle" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="addDappTitle">Add new dapp</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div className="modal fade" id="addDapp" tabIndex="-1" role="dialog" aria-labelledby="addDappTitle" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="addDappTitle">Add new dapp</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 
-                <h7>Contract Name:</h7>
+                <h6>Contract Name:</h6>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="contractInput"
                   // onChange={e => this.setState({ contract: e.target.value })}
                   placeholder="Name of dapp"
                 />
                 <br/>
-                <h7>Code:</h7>
+                <h6>Code:</h6>
                 <textarea
                   rows="20"
                   id="codeInput"
                   // onChange={e => this.setState({ code: e.target.value })}
                   placeholder="Script to fetch balances"
-                  class="form-control"
+                  className="form-control"
                 />
               </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" data-dismiss="modal" onClick={() => {
+              <div className="modal-footer">
+                <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={() => {
                   this.setState({ contract: document.getElementById("contractInput").value});
                   this.setState({ code: document.getElementById("codeInput").value });
                   this.putDataToDB(this.state.message);
                 }}>Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
