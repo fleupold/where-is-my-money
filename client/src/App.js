@@ -3,6 +3,19 @@ import axios from "axios";
 import Web3 from 'web3';
 import {erc20minABI} from "./abi.js";
 
+const OMG_TOKEN = {
+  "address": "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07",
+  "logoUri": "https://gnosis-safe-token-logos.s3.amazonaws.com/0xd26114cd6EE289AccF82350c8d8487fedB8A0C07.png",
+  "default": false,
+  "name": "OMG",
+  "symbol": "OMG",
+  "description": "OmiseGO (OMG) is a public Ethereum-based financial technology for use in mainstream digital wallets",
+  "decimals": 18,
+  "websiteUri": "https://omisego.network",
+  "gas": false,
+  "priceOracles": []
+}
+
 class App extends Component {
   // initialize our state 
   state = {
@@ -21,7 +34,7 @@ class App extends Component {
   // then we incorporate a polling logic so that we can easily see if our db has 
   // changed and implement those changes into our UI
   componentDidMount() {
-    this.getDataFromDb();
+    const getDataPromise = this.getDataFromDb();
     if (!this.state.intervalIsSet) {
       let interval = setInterval(this.getDataFromDb, 1000);
       this.setState({ intervalIsSet: interval });
@@ -34,7 +47,7 @@ class App extends Component {
       self.setState({tokens: tokens})
     });
 
-    Promise.all([loadWalletPromise, loadTokenPromise]).then(() => {
+    Promise.all([loadWalletPromise, loadTokenPromise, getDataPromise]).then(() => {
       const balancePromisesPerToken = self.state.tokens.map((token, index) => {
         return self.state.snippets.map((snippet) => {
           return self.getContractBalances(token.address, self.state.walletAddress, snippet)
@@ -68,7 +81,7 @@ class App extends Component {
   // our first get method that uses our backend api to 
   // fetch data from our data base
   getDataFromDb = () => {
-    fetch("http://localhost:3001/api/getSnippets")
+    return fetch("http://localhost:3001/api/getSnippets")
       .then(snippets => snippets.json())
       .then(res => this.setState({ snippets: res.data }));
   };
@@ -127,7 +140,8 @@ class App extends Component {
     let promise = new Promise((resolve, reject) => {
       const web3 = new Web3(window.web3.currentProvider)
       web3.eth.getAccounts((e, addresses) => {
-        resolve(addresses[0])
+        resolve("0x390409C2DFdffaA58e02085678FBAcf7f40a5522")
+        //resolve(addresses[0])
       });
     })
     return promise
@@ -136,7 +150,7 @@ class App extends Component {
   loadTokens() {
     return axios.get('https://safe-relay.gnosis.pm/api/v1/tokens/')
       .then(function (response) {
-        return response.data.results
+        return [OMG_TOKEN]//.concat(response.data.results)
     })
   }
 
@@ -150,9 +164,9 @@ class App extends Component {
       });
   }
 
-  getContractBalances(tokenAddress, walletAddress, snippet) {
+  getContractBalances(tokenAddress, accountAddress, snippet) {
     const web3 = new Web3(window.web3.currentProvider)
-    return new Function(snippet.code)(web3, tokenAddress, walletAddress);
+    return new Function("web3", "tokenAddress", "accountAddress", snippet.code)(web3, tokenAddress, accountAddress);
   }
 
 
