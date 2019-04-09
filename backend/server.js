@@ -65,19 +65,19 @@ router.delete("/deleteSnippet", (req, res) => {
 // this is our create methid
 // this method adds new Snippet in our Snippetbase
 router.post("/putSnippet", (req, res) => {
-  let Snippet = new Snippet();
+  let snippet = new Snippet();
 
-  const { id, message } = req.body;
+  const { contract, code } = req.body;
 
-  if ((!id && id !== 0) || !message) {
+  if (!contract || !code) {
     return res.json({
       success: false,
       error: "INVALID INPUTS"
     });
   }
-  Snippet.message = message;
-  Snippet.id = id;
-  Snippet.save(err => {
+  snippet.contract = contract;
+  snippet.code = code;
+  snippet.save(err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
