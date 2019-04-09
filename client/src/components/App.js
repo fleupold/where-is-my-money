@@ -141,38 +141,39 @@ class App extends Component {
       <div>
         <div class="row">
           <div class="col col-12">
-              <h1>Where is my money?</h1>
-              <img src="./img/eyes.gif" class="rounded" width="200px"></img>
+              <h1 class="text-center">Where is my money?</h1>
+              <div class="text-center">
+                <img src="./img/eyes.gif" class="rounded" width="200px"></img>
+              </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row mt-3">
           <div class="col-6">
-            <form onSubmit={(event) => {
-                event.preventDefault()
-                this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
-            >
-              <label>Wallet Address:
-                <input 
-                  type="text" 
-                  style={{ width: "300px" }}
-                  onChange={e => this.setState({ customWalletAddress: e.target.value })}
-                  value={this.state.customWalletAddress}
-                  placeholder="Enter address or ENS name" />
-              </label>
-              <input type="submit" value="Go" />
-            </form>
+            <div class="text-center">
+              <form onSubmit={(event) => {
+                  event.preventDefault()
+                  this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
+              >
+                <label>Wallet Address:
+                  <input 
+                    type="text" 
+                    style={{ width: "300px" }}
+                    onChange={e => this.setState({ customWalletAddress: e.target.value })}
+                    value={this.state.customWalletAddress}
+                    placeholder="Enter address or ENS name" />
+                </label>
+                <input type="submit" value="Go" />
+              </form>
+            </div>
           </div>
         </div>
-        <div class="row">
-          &nbsp;
-        </div>
-        <div class="row">
+        <div class="row mt-3">
           <div class="col col-6" style={{ paddingRight: "20px", borderRight: "1px solid #ccc" }}>
             <h5> Liquid</h5>
             <table class="table table-hover">
               <tbody>
                 {tokens.length <= 0
-                ? "Loading Tokens"
+                ? "<tr><td>Loading Tokens</tr></td>"
                 : tokens.map(token => (
                   <tr>
                     <td>
@@ -199,8 +200,8 @@ class App extends Component {
             </table>
           </div>
         </div>
-        <div class="row">
-          <div class="col col-12">
+        <div class="row mt-3">
+          <div class="col col-12  text-center" >
             <a class="btn btn-secondary" href="/create" role="button">Manage dapps</a>
           </div>
         </div>
