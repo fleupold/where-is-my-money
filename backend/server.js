@@ -24,13 +24,8 @@ app.use("/api", router);
 // use client code for other URLS
 app.use(express.static(path.join(__dirname, '..', 'client')));
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-app.use(express.static(path.join(__dirname, '..', 'client', 'src')));
 app.get('/*', function (req, res) {
-  if (process.env.PORT) {
-    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
-  } else {
-    res.sendFile(path.join(__dirname, '..', 'client', 'src', 'index.js'));
-  }
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
 });
 
 // this is our MongoDB Snippetbase
