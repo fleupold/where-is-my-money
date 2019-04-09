@@ -48,6 +48,7 @@ class App extends Component {
     const self = this;
     const balancePromisesPerToken = self.state.tokens.map((token, index) => {
       return self.state.snippets.map((snippet) => {
+        console.log(snippet)
         return self.getContractBalances(token.address, self.state.walletAddress, snippet)
             .then((balance) => {
                 self.setState((state) => {

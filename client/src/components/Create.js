@@ -37,24 +37,25 @@ class Create extends Component {
     axios.post("http://localhost:3001/api/putSnippet", {
       contract: this.state.contract,
       code: this.state.code
+    }).then(() => {
+      window.location.reload();
     });
   };
 
+  upvote = (id) => {
+    localStorage.setItem(id, true);
+    axios.post("http://localhost:3001/api/upvote", {
+      id: id,
+    })
+    this.forceUpdate();
+  };
 
-  // our update method that uses our backend api
-  // to overwrite existing data base information
-  updateDB = (idToUpdate, updateToApply) => {
-    let objIdToUpdate = null;
-    this.state.data.forEach(dat => {
-      if (dat.id === idToUpdate) {
-        objIdToUpdate = dat._id;
-      }
+  downvote = (id) => {
+    localStorage.setItem(id, true);
+    axios.post("http://localhost:3001/api/downvote", {
+      id: id,
     });
-
-    axios.post("http://localhost:3001/api/updateSnippet", {
-      id: objIdToUpdate,
-      update: { message: updateToApply }
-    });
+    this.forceUpdate();
   };
 
   toggleSnippet = (index) => {
@@ -85,6 +86,8 @@ class Create extends Component {
                     </Highlight>
                     <br/>
                   </Collapse>
+                  <button disabled={localStorage.getItem(snippet._id)} onClick={() => this.upvote(snippet._id)}>Upvote</button>
+                  <button disabled={localStorage.getItem(snippet._id)} onClick={() => this.downvote(snippet._id)}>Downvote</button>
                 </li>
               ))}
         </ul>

@@ -83,6 +83,22 @@ router.post("/putSnippet", (req, res) => {
   });
 });
 
+router.post("/upvote", (req, res) => {
+  const { id } = req.body;
+  Snippet.findOneAndUpdate(id, {$inc: { "upvotes" : 1 }}, err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
+
+router.post("/downvote", (req, res) => {
+  const { id } = req.body;
+  Snippet.findOneAndUpdate(id, {$inc: { "downvotes" : 1 }}, err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
+
 // append /api for our http requests
 app.use("/api", router);
 
