@@ -8,8 +8,6 @@ class Create extends Component {
   // initialize our state 
   state = {
     snippets: [],
-    code: null,
-    contract: null,
     intervalIsSet: false,
     id: 0,
   };
@@ -33,10 +31,10 @@ class Create extends Component {
 
   // our put method that uses our backend api
   // to create new query into our data base
-  putDataToDB = () => {
+  putDataToDB = (contract, code) => {
     axios.post("http://localhost:3001/api/putSnippet", {
-      contract: this.state.contract,
-      code: this.state.code
+      contract: contract,
+      code: code
     }).then(() => {
       window.location.reload();
     });
@@ -126,11 +124,11 @@ class Create extends Component {
                     </div>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-link" onClick={() => this.upvote(snippet)}  disabled={localStorage.getItem(snippet._id)}>
+                    <button type="button" class="btn btn-link" onClick={() => this.upvote(snippet)}  disabled={!!localStorage.getItem(snippet._id)}>
                         <span role="img">👍</span>
                         <span>{snippet.upvotes} </span>
                     </button>
-                    <button type="button" class="btn btn-link" onClick={() => this.downvote(snippet)} disabled={localStorage.getItem(snippet._id)}>
+                    <button type="button" class="btn btn-link" onClick={() => this.downvote(snippet)} disabled={!!localStorage.getItem(snippet._id)}>
                         <span role="img">👎</span>
                         <span>{snippet.downvotes} </span>
                     </button>
@@ -176,9 +174,7 @@ class Create extends Component {
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" data-dismiss="modal" onClick={() => {
-                  this.setState({ contract: document.getElementById("contractInput").value});
-                  this.setState({ code: document.getElementById("codeInput").value });
-                  this.putDataToDB(this.state.message);
+                  this.putDataToDB(document.getElementById("contractInput").value, document.getElementById("codeInput").value);
                 }}>Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>

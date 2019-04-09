@@ -85,7 +85,7 @@ router.post("/putSnippet", (req, res) => {
 
 router.post("/upvote", (req, res) => {
   const { id } = req.body;
-  Snippet.findOneAndUpdate(id, {$inc: { "upvotes" : 1 }}, err => {
+  Snippet.findOneAndUpdate({'_id': id}, {$inc: { "upvotes" : 1 }}, err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
@@ -93,7 +93,7 @@ router.post("/upvote", (req, res) => {
 
 router.post("/downvote", (req, res) => {
   const { id } = req.body;
-  Snippet.findOneAndUpdate(id, {$inc: { "downvotes" : 1 }}, err => {
+  Snippet.findOneAndUpdate({'_id': id}, {$inc: { "downvotes" : 1 }}, err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });

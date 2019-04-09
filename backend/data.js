@@ -5,8 +5,8 @@ const SnippetSchema = new Schema(
     {
         contract: String,
         code: String,
-        upvotes: Number,
-        downvotes: Number,
+        upvotes: { type: Number, default: 0 },
+        downvotes: { type: Number, default: 0 },
         url: String,
     },
     { timestamps: true }
