@@ -77,11 +77,18 @@ class App extends Component {
 
   loadWalletAddress() {
     let promise = new Promise((resolve, reject) => {
-      const web3 = new Web3(window.web3.currentProvider)
-      web3.eth.getAccounts((e, addresses) => {
-        resolve("0x390409C2DFdffaA58e02085678FBAcf7f40a5522")
-        //resolve(addresses[0])
-      });
+      const fn = () => {
+        const web3 = new Web3(window.web3.currentProvider)
+        web3.eth.getAccounts((e, addresses) => {
+            resolve(addresses[0])
+        });
+      }
+      if (window.web3) {
+        fn();
+      } else {
+        setTimeout(fn, 500);
+      }
+      
     })
     return promise
   }
