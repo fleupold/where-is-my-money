@@ -241,6 +241,8 @@ class App extends Component {
                                   <th scope="col">
                                     {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
                                   </th>
+                                  <th scope="col">
+                                  </th>
                                 </tr>
                               </tbody> 
                             </table>
