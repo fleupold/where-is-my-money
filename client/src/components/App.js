@@ -34,6 +34,7 @@ class App extends Component {
       self.setState({walletAddress: address, customWalletAddress: address})
     });
     const loadTokenPromise = this.loadTokens().then((tokens) => {
+      tokens.forEach((token) => token.contractBalances = new Map())
       self.setState({tokens: tokens})
     });
 
@@ -48,16 +49,23 @@ class App extends Component {
     const balancePromisesPerToken = self.state.tokens.map((token, index) => {
       return self.state.snippets.map((snippet) => {
         return self.getContractBalances(token.address, self.state.walletAddress, snippet)
-      }).concat(self.getBalance(token.address, index));
+            .then((balance) => {
+                self.setState((state) => {
+                    state.tokens[index].contractBalances.set(snippet.contract, balance);
+                })
+            })
+      }).concat(self.getBalance(token.address, index)
+        .then((balance) => {
+            self.setState((state) => {
+                state.tokens[index].contractBalances.set("ERC20 contract", balance);
+            })
+        }));
     })
 
     balancePromisesPerToken.forEach((balancePromises, tokenIndex) => {
-      Promise.all(balancePromises).then((balances) => {
-        self.setState((state) => {
-          state.tokens[tokenIndex].balance = balances.reduce((a,b) => a + b, 0);
-        })
-        self.forceUpdate()
+      Promise.all(balancePromises).then(() => {
         console.log("Load balances completed")
+        self.forceUpdate();
       })
     })
   }
@@ -126,8 +134,9 @@ class App extends Component {
       }
       this.state.walletAddress = customWalletAddress
       this.setState(state => {
-          state.tokens.forEach(token => token.balance = null)
+          state.tokens.forEach(token => token.contractBalances = new Map())
       })
+      this.forceUpdate()
       this.loadBalances()
   }
 
@@ -149,14 +158,21 @@ class App extends Component {
         </div>
         <div class="row mt-3">
           <div class="col-6">
-          <div class="text-center">
-            Wallet Address: <input 
-                type="text" 
-                style={{ width: "300px" }}
-                onChange={e => this.setState({ customWalletAddress: e.target.value })}
-                value={this.state.customWalletAddress}
-                placeholder="Enter address or ENS name"></input>
-                <button onClick={() => this.resolveCustomWalletAddress(this.state.customWalletAddress)}>Scan</button>
+            <div class="text-center">
+              <form onSubmit={(event) => {
+                  event.preventDefault()
+                  this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
+              >
+                <label>Wallet Address:
+                  <input 
+                    type="text" 
+                    style={{ width: "300px" }}
+                    onChange={e => this.setState({ customWalletAddress: e.target.value })}
+                    value={this.state.customWalletAddress}
+                    placeholder="Enter address or ENS name" />
+                </label>
+                <input type="submit" value="Go" />
+              </form>
             </div>
           </div>
         </div>
@@ -173,7 +189,7 @@ class App extends Component {
                       {token.symbol}
                     </td>
                     <td>
-                      {token.balance}
+                      {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
                     </td>  
                   </tr>
                 ))}  
