@@ -31,26 +31,33 @@ class App extends Component {
     let self = this;
     const getDataPromise = this.getDataFromDb();
     const loadWalletPromise = this.loadWalletAddress().then((address) => {
-      self.setState({walletAddress: address})
+      self.setState({walletAddress: address, customWalletAddress: address})
     });
     const loadTokenPromise = this.loadTokens().then((tokens) => {
       self.setState({tokens: tokens})
     });
 
     Promise.all([loadWalletPromise, loadTokenPromise, getDataPromise]).then(() => {
-      const balancePromisesPerToken = self.state.tokens.map((token, index) => {
-        return self.state.snippets.map((snippet) => {
-          return self.getContractBalances(token.address, self.state.walletAddress, snippet)
-        }).concat(self.getBalance(token.address, index));
-      })
+      self.loadBalances();
+    })
+  }
 
-      balancePromisesPerToken.forEach((balancePromises, tokenIndex) => {
-        Promise.all(balancePromises).then((balances) => {
-          self.setState((state) => {
-            state.tokens[tokenIndex].balance = balances.reduce((a,b) => a + b, 0);
-          })
-          self.forceUpdate()
+  loadBalances() {
+    console.log("Load balances " + this.state.walletAddress)
+    const self = this;
+    const balancePromisesPerToken = self.state.tokens.map((token, index) => {
+      return self.state.snippets.map((snippet) => {
+        return self.getContractBalances(token.address, self.state.walletAddress, snippet)
+      }).concat(self.getBalance(token.address, index));
+    })
+
+    balancePromisesPerToken.forEach((balancePromises, tokenIndex) => {
+      Promise.all(balancePromises).then((balances) => {
+        self.setState((state) => {
+          state.tokens[tokenIndex].balance = balances.reduce((a,b) => a + b, 0);
         })
+        self.forceUpdate()
+        console.log("Load balances completed")
       })
     })
   }
@@ -101,6 +108,22 @@ class App extends Component {
     return new Function("web3", "tokenAddress", "accountAddress", snippet.code)(web3, tokenAddress, accountAddress);
   }
 
+  async resolveCustomWalletAddress(customWalletAddress) {
+      if (customWalletAddress.indexOf('.') !== -1) {
+        const web3 = new Web3(window.web3.currentProvider)
+        customWalletAddress = await web3.eth.ens.getAddress(customWalletAddress)
+        if (!customWalletAddress || customWalletAddress === "0x0000000000000000000000000000000000000000") {
+            alert("Invalid ENS name")
+            return;
+        }
+      }
+      this.state.walletAddress = customWalletAddress
+      this.setState(state => {
+          state.tokens.forEach(token => token.balance = null)
+      })
+      this.loadBalances()
+  }
+
 
   // here is our UI
   // it is easy to understand their functions when you 
@@ -110,7 +133,14 @@ class App extends Component {
     return (
       <div>
         <div>
-            <p>Wallet Address: {this.state.walletAddress}</p>
+            <p>Wallet Address:<input 
+                type="text" 
+                style={{ width: "300px" }}
+                onChange={e => this.setState({ customWalletAddress: e.target.value })}
+                value={this.state.customWalletAddress}
+                placeholder="Enter address or ENS name"></input>
+                <button onClick={() => this.resolveCustomWalletAddress(this.state.customWalletAddress)}>Scan</button>
+            </p>
         </div>
         <ul>
           {tokens.length <= 0
