@@ -181,7 +181,7 @@ class App extends Component {
             <h5>Liquid</h5>
             <table className="table table-hover">
               <tbody>{tokens.length <= 0
-                ? <tr><td>"Loading Tokens"</td></tr>
+                ? <tr><td>Loading Tokens</td></tr>
                 : tokens.map(token => (
                   <tr key={token.symbol}>
                     <td>
@@ -189,7 +189,34 @@ class App extends Component {
                     </td>
                     <td>
                       {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
-                    </td>  
+                    </td>
+                    <td>  
+                      <button type="button" className="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target={"#where".concat(token.symbol)}>
+                        Where?
+                      </button>
+
+                      <div className="modal fade" id={"#where".concat(token.symbol)} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h5 className="modal-title" id="exampleModalLongTitle">asdf</h5>
+                              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div className="modal-body">
+                              <table>
+
+                              </table>
+                            </div>
+                            <div className="modal-footer">
+                              <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </td>    
                   </tr>
                 ))}</tbody> 
             </table>

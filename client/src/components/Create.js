@@ -85,7 +85,7 @@ class Create extends Component {
                 </tr>
               </thead>
               <tbody>{snippets.length <= 0
-              ? <tr><td>"NO DB ENTRIES YET"</td></tr>
+              ? <tr><td>NO DB ENTRIES YET</td></tr>
               : snippets.map((snippet, index) => (
                 <tr key={index}>
                   <td> 
