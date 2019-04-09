@@ -149,17 +149,17 @@ class App extends Component {
     const { tokens } = this.state;
     return (
       <div>
-        <div class="row">
-          <div class="col col-12">
-              <h1 class="text-center">Where is my money?</h1>
-              <div class="text-center">
-                <img src="./img/eyes.gif" class="rounded" width="200px"></img>
+        <div className="row">
+          <div className="col col-12">
+              <h1 className="text-center">Where is my money?</h1>
+              <div className="text-center">
+                <img src="./img/eyes.gif" className="rounded" width="200px"></img>
               </div>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col-6">
-            <div class="text-center">
+        <div className="row mt-3">
+          <div className="col-6">
+            <div className="text-center">
               <form onSubmit={(event) => {
                   event.preventDefault()
                   this.resolveCustomWalletAddress(this.state.customWalletAddress)}}
@@ -177,29 +177,63 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col col-6" style={{ paddingRight: "20px", borderRight: "1px solid #ccc" }}>
-            <h5> Liquid</h5>
-            <table class="table table-hover">
-              <tbody>
-                {tokens.length <= 0
-                ? "Loading Tokens"
+        <div className="row mt-3">
+          <div className="col col-6" style={{ paddingRight: "20px", borderRight: "1px solid #ccc"}}>
+            <h5>Liquid</h5>
+            <table className="table table-hover">
+              <tbody>{tokens.length <= 0
+                ? <tr><td>Loading Tokens</td></tr>
                 : tokens.map(token => (
-                  <tr>
+                  <tr key={token.symbol}>
                     <td>
                       {token.symbol}
                     </td>
                     <td>
                       {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
-                    </td>  
+                    </td>
+                    <td>  
+                      <button type="button" className="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target={"#where".concat(token.symbol)}>
+                        Where?
+                      </button>
+
+                      <div className="modal fade" id={"where".concat(token.symbol)} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h5 className="modal-title" id="exampleModalLongTitle">Where is my {token.symbol}?</h5>
+                              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div className="modal-body">
+                              <table className="table table-hover">
+                              <tbody> {Array.from(token.contractBalances.entries()).map((contract, index) => (
+                                  <tr key={"balance".concat(contract[0])}>
+                                    <td>
+                                      {contract[0]}
+                                    </td>
+                                    <td>
+                                      {contract[1]}
+                                    </td>
+                                  </tr>
+                              ))}</tbody> 
+                            </table>
+                            </div>
+                            <div className="modal-footer">
+                              <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </td>    
                   </tr>
-                ))}  
-              </tbody> 
+                ))}</tbody> 
             </table>
           </div>
-          <div class="col col-6">
+          <div className="col col-6">
             <h5> Illiquid / locked</h5>
-            <table class="table table-hover">
+            <table className="table table-hover">
               <tbody>
                 <tr>
                   <td>
@@ -210,9 +244,9 @@ class App extends Component {
             </table>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col col-12  text-center" >
-            <a class="btn btn-secondary" href="/create" role="button">Manage dapps</a>
+        <div className="row mt-3">
+          <div className="col col-12  text-center" >
+            <a className="btn btn-secondary" href="/create" role="button">Manage dapps</a>
           </div>
         </div>
         
