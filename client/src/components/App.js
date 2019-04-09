@@ -163,14 +163,13 @@ class App extends Component {
   // see them render into our screen
   render() {
     const { tokens } = this.state;
-    const { snippets } = this.state;
     return (
       <div>
         <div className="row">
           <div className="col col-12">
               <h1 className="text-center">Where is my money?</h1>
               <div className="text-center">
-                <img src="./img/eyes.gif" className="rounded" width="200px"></img>
+                <img src="./img/eyes.gif" className="rounded" width="200px" alt="eyes"></img>
               </div>
           </div>
         </div>
