@@ -192,10 +192,7 @@ class App extends Component {
                       {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
                     </td>
                     <td>  
-                      <button type="button" className="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target={"#where".concat(token.symbol)}>
-                        Where?
-                      </button>
-
+                      <button type="button" className="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target={"#where".concat(token.symbol)}>Where?</button>
                       <div className="modal fade" id={"where".concat(token.symbol)} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                           <div className="modal-content">
@@ -216,7 +213,16 @@ class App extends Component {
                                       {contract[1]}
                                     </td>
                                   </tr>
-                              ))}</tbody> 
+                                ))}
+                                <tr>
+                                  <th scope="col">
+                                    Total
+                                  </th>
+                                  <th scope="col">
+                                    {Array.from(token.contractBalances.values()).reduce((a,b) => a + b, 0)}
+                                  </th>
+                                </tr>
+                              </tbody> 
                             </table>
                             </div>
                             <div className="modal-footer">
@@ -225,20 +231,17 @@ class App extends Component {
                           </div>
                         </div>
                       </div>
-
                     </td>    
                   </tr>
                 ))}</tbody> 
             </table>
           </div>
           <div className="col col-6">
-            <h5> Illiquid / locked</h5>
+            <h5>Illiquid / locked</h5>
             <table className="table table-hover">
               <tbody>
                 <tr>
-                  <td>
-                    todo
-                  </td>
+                  <td>todo</td>
                 </tr>
               </tbody>
             </table>

@@ -74,6 +74,11 @@ class Create extends Component {
     return (
       <div>
         <a className="btn btn-secondary" href="/" role="button">Back to main</a>
+        <div className="row">
+          <div className="col col-12">
+              <h2 className="text-center">Manage dapps</h2>
+          </div>
+        </div>
         <div className="row mt-3">
           <div className="col col-12">
             <table className="table table-hover">
@@ -156,7 +161,6 @@ class Create extends Component {
                   type="text"
                   className="form-control"
                   id="contractInput"
-                  // onChange={e => this.setState({ contract: e.target.value })}
                   placeholder="Name of dapp"
                 />
                 <br/>
@@ -164,10 +168,12 @@ class Create extends Component {
                 <textarea
                   rows="20"
                   id="codeInput"
-                  // onChange={e => this.setState({ code: e.target.value })}
                   placeholder="Script to fetch balances"
                   className="form-control"
                 />
+                <small id="codeHelp" class="form-text text-muted">
+  Your code must return a promise with the balance. You have the following input objects available: <code>web3</code>, <code>tokenAddress</code>, <code>accountAddress</code>.
+</small>
               </div>
               <div className="modal-footer">
                 <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={() => {
