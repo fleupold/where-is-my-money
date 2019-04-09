@@ -11,6 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
-    "concurrently": "^4.1.0"
+    "bootstrap": "^4.3.1",
+    "concurrently": "^4.1.0",
+    "react": "^16.8.6",
+    "react-collapse": "^4.0.3",
+    "react-highlight": "^0.12.0",
+    "react-motion": "^0.5.2",
+    "react-router-dom": "^5.0.0"
   }
 }
